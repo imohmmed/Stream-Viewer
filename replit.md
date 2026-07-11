@@ -34,7 +34,7 @@ _Describe the high-level user-facing capabilities of this app once they exist._
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- IPTV app: user wants native Swift (Xcode) apps only for iOS/iPadOS/macOS/tvOS — explicitly no Flutter, no React Native/Expo.
 
 ## Gotchas
 
@@ -43,3 +43,4 @@ _Populate as you build — sharp edges, "always run X before Y" rules._
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- `native-apple-app/` — vendored Swift native iOS/macOS/tvOS Xcode projects (from open-source another-iptv-player), NOT part of the pnpm workspace; meant to be opened on a Mac with Xcode, not run from Replit.

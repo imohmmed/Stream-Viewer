@@ -47,6 +47,7 @@ struct another_iptv_playerApp: App {
             ContentView()
                 .environment(\.appDatabase, .shared)
                 .environmentObject(menuSignal)
+                .tint(.accentColor)
                 .frame(minWidth: 1024, minHeight: 640)
         }
         .windowStyle(.titleBar)

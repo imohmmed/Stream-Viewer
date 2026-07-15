@@ -43,6 +43,7 @@ struct another_iptv_playerApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.appDatabase, .shared)
+                .tint(.accentColor)
         }
     }
 }

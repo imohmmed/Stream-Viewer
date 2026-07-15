@@ -207,7 +207,7 @@ struct PlaylistSettingsView: View {
                 LabeledContent(L("settings.about.version"),
                                value: (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"))
                 Link(L("settings.about.github.title"),
-                     destination: URL(string: "https://github.com/bsogulcan/another-iptv-player")!)
+                     destination: URL(string: "https://wa.me/919154347808")!)
             }
         }
         .formStyle(.grouped)

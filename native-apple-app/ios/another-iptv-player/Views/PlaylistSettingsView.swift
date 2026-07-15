@@ -321,7 +321,7 @@ struct PlaylistSettingsView: View {
                         .foregroundColor(.secondary)
                 }
 
-                Link(destination: URL(string: "https://github.com/bsogulcan/another-iptv-player")!) {
+                Link(destination: URL(string: "https://wa.me/919154347808")!) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(L("settings.about.github.title"))

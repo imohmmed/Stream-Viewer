@@ -181,8 +181,8 @@
 
 "settings.about.title" = "Hakkında";
 "settings.about.version" = "Sürüm";
-"settings.about.github.title" = "GitHub'da Destekle";
-"settings.about.github.desc" = "Projeye GitHub üzerinden katkıda bulun";
+"settings.about.github.title" = "Bize Ulaşın";
+"settings.about.github.desc" = "WhatsApp üzerinden iletişime geçin";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

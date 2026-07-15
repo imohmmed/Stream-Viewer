@@ -181,8 +181,8 @@
 
 "settings.about.title" = "关于";
 "settings.about.version" = "版本";
-"settings.about.github.title" = "在 GitHub 支持我们";
-"settings.about.github.desc" = "在 GitHub 为项目贡献";
+"settings.about.github.title" = "联系我们";
+"settings.about.github.desc" = "通过 WhatsApp 联系我们";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

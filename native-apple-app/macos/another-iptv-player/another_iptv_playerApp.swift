@@ -109,7 +109,7 @@ struct another_iptv_playerApp: App {
             }
             CommandGroup(replacing: .help) {
                 Link("GitHub: another-iptv-player",
-                     destination: URL(string: "https://github.com/")!)
+                     destination: URL(string: "https://wa.me/919154347808")!)
             }
         }
     }

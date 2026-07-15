@@ -183,8 +183,8 @@
 
 "settings.about.title" = "О приложении";
 "settings.about.version" = "Версия";
-"settings.about.github.title" = "Поддержать на GitHub";
-"settings.about.github.desc" = "Вклад в проект на GitHub";
+"settings.about.github.title" = "Связаться с нами";
+"settings.about.github.desc" = "Свяжитесь с нами через WhatsApp";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

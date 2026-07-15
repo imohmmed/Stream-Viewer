@@ -181,8 +181,8 @@
 
 "settings.about.title" = "À propos";
 "settings.about.version" = "Version";
-"settings.about.github.title" = "Soutenir sur GitHub";
-"settings.about.github.desc" = "Contribuez au projet sur GitHub";
+"settings.about.github.title" = "Contactez-nous";
+"settings.about.github.desc" = "Contactez-nous via WhatsApp";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

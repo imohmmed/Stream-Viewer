@@ -7,8 +7,6 @@ struct PlaybackTrackSettingsSheet: View {
     @Binding var showDebugOverlay: Bool
     let streamURL: URL
     @Environment(\.dismiss) private var dismiss
-    @State private var didCopyURL = false
-    @State private var copyResetTask: Task<Void, Never>?
     @State private var showSubtitleImporter = false
     @State private var showSubtitleImportError = false
 
@@ -45,25 +43,7 @@ struct PlaybackTrackSettingsSheet: View {
                 Section(L("player.dev_section")) {
                     Toggle(L("player.show_debug_overlay"), isOn: $showDebugOverlay)
                 }
-                Section(L("player.stream_url.title")) {
-                    Button(action: copyStreamURL) {
-                        HStack(alignment: .top, spacing: 10) {
-                            Text(streamURL.absoluteString)
-                                .font(.system(.footnote, design: .monospaced))
-                                .foregroundStyle(.primary)
-                                .multilineTextAlignment(.leading)
-                                .textSelection(.enabled)
-                            Spacer(minLength: 8)
-                            Image(systemName: didCopyURL ? "checkmark" : "doc.on.doc")
-                                .font(.body.weight(.semibold))
-                                .foregroundStyle(didCopyURL ? Color.accentColor : .secondary)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                    .accessibilityLabel(
-                        didCopyURL ? L("player.stream_url.copied") : L("player.stream_url.copy")
-                    )
-                }
+
             }
             .navigationTitle(L("player.tracks.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -116,16 +96,6 @@ struct PlaybackTrackSettingsSheet: View {
         }
     }
 
-    private func copyStreamURL() {
-        UIPasteboard.general.string = streamURL.absoluteString
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-        didCopyURL = true
-        copyResetTask?.cancel()
-        copyResetTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 1_500_000_000)
-            if !Task.isCancelled { didCopyURL = false }
-        }
-    }
 
     @ViewBuilder
     private func trackSection(

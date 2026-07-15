@@ -4,8 +4,6 @@ import UniformTypeIdentifiers
 
 struct PlaybackTrackSettingsSheet: View {
     @ObservedObject var player: VideoPlayerController
-    @Binding var showDebugOverlay: Bool
-    let streamURL: URL
     @Environment(\.dismiss) private var dismiss
     @State private var showSubtitleImporter = false
     @State private var showSubtitleImportError = false
@@ -40,9 +38,6 @@ struct PlaybackTrackSettingsSheet: View {
                 if !player.isLiveStream {
                     importedSubtitlesSection
                 }
-                Section(L("player.dev_section")) {
-                    Toggle(L("player.show_debug_overlay"), isOn: $showDebugOverlay)
-                }
 
             }
             .navigationTitle(L("player.tracks.title"))
@@ -54,7 +49,7 @@ struct PlaybackTrackSettingsSheet: View {
             }
         }
         .onAppear { player.updateTracks() }
-        .onDisappear { copyResetTask?.cancel() }
+        .onDisappear {}
         .fileImporter(
             isPresented: $showSubtitleImporter,
             allowedContentTypes: Self.subtitleContentTypes,

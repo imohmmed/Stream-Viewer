@@ -1041,8 +1041,6 @@ private struct PlayerMenusBar: View, Equatable {
                     Text(String(format: "%.2fx", s)).tag(s)
                 }
             }
-            Divider()
-            Toggle("Debug overlay", isOn: $showDebugOverlay)
         }
     }
 }

@@ -35,10 +35,6 @@ struct PlaylistSettingsView: View {
     @AppStorage("player.pipEnabled") private var pipEnabled = true
     @AppStorage("player.continuePlayingInBackground") private var continuePlayingInBackground = true
 
-    @State private var downloadUsedBytes: Int64 = 0
-    @State private var showingDeleteAllDownloadsAlert = false
-    @State private var showDownloads = false
-
     init(playlist: Playlist, onDismiss: @escaping () -> Void) {
         self.playlist = playlist
         self.onDismiss = onDismiss
@@ -71,26 +67,6 @@ struct PlaylistSettingsView: View {
                 .disabled(isSyncing)
                 if isSyncing, let msg = progressMessage {
                     Text(msg).font(.caption).foregroundStyle(.secondary)
-                }
-            }
-
-            // 2) Downloads
-            Section(L("download.title")) {
-                LabeledContent(L("download.storage_used"),
-                               value: ByteCountFormatter.string(fromByteCount: downloadUsedBytes, countStyle: .file))
-                HStack {
-                    Button {
-                        showDownloads = true
-                    } label: {
-                        Label(L("download.title"), systemImage: "arrow.down.circle")
-                    }
-                    if downloadUsedBytes > 0 {
-                        Button(role: .destructive) {
-                            showingDeleteAllDownloadsAlert = true
-                        } label: {
-                            Label(L("download.delete_all"), systemImage: "trash")
-                        }
-                    }
                 }
             }
 
@@ -211,17 +187,6 @@ struct PlaylistSettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .sheet(isPresented: $showDownloads) {
-            NavigationStack {
-                DownloadsView(playlist: playlist)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button(L("common.close")) { showDownloads = false }
-                        }
-                    }
-            }
-            .frame(minWidth: 720, minHeight: 480)
-        }
         .alert(L("history.clear.title"), isPresented: $showClearHistoryAlert) {
             Button(L("common.cancel"), role: .cancel) { }
             Button(L("common.confirm_delete_yes"), role: .destructive) {
@@ -230,33 +195,13 @@ struct PlaylistSettingsView: View {
         } message: {
             Text(L("history.clear.message.all"))
         }
-        .alert(L("download.delete_all"), isPresented: $showingDeleteAllDownloadsAlert) {
-            Button(L("common.cancel"), role: .cancel) { }
-            Button(L("common.confirm_delete_yes"), role: .destructive) {
-                Task {
-                    await DownloadManager.shared.deleteAll(playlistId: playlist.id)
-                    await refreshDownloadUsage()
-                }
-            }
-        } message: {
-            Text(L("download.delete_all.message"))
-        }
         .task {
             await fetchAuthInfo()
             await fetchLocalStats()
-            await refreshDownloadUsage()
         }
     }
 
     // MARK: - Helpers
-
-    private func refreshDownloadUsage() async {
-        let pid = playlist.id
-        let bytes = await Task.detached(priority: .utility) {
-            DownloadStorage.usedBytes(playlistId: pid)
-        }.value
-        await MainActor.run { downloadUsedBytes = bytes }
-    }
 
     private func fetchLocalStats() async {
         do {

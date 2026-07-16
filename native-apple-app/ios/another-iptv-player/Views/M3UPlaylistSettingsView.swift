@@ -23,9 +23,6 @@ struct M3UPlaylistSettingsView: View {
     @AppStorage("player.pipEnabled") private var pipEnabled = true
     @AppStorage("player.continuePlayingInBackground") private var continuePlayingInBackground = true
     @AppStorage("player.speedUpOnLongPress") private var speedUpOnLongPress = true
-    @AppStorage("download.wifi_only") private var downloadWifiOnly = false
-    @State private var downloadUsedBytes: Int64 = 0
-    @State private var showingDeleteAllDownloadsAlert = false
 
     @ObservedObject private var locale = LocalizationManager.shared
 
@@ -76,46 +73,6 @@ struct M3UPlaylistSettingsView: View {
                     Text(msg)
                         .font(.caption)
                         .foregroundColor(.secondary)
-                }
-            }
-
-            Section(header: Text(L("download.title"))) {
-                NavigationLink {
-                    DownloadsView(playlist: playlist)
-                } label: {
-                    HStack {
-                        Text(L("download.title"))
-                        Spacer()
-                        Image(systemName: "arrow.down.circle")
-                    }
-                }
-
-                Toggle(isOn: $downloadWifiOnly) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(L("download.wifi_only.title"))
-                        Text(L("download.wifi_only.desc"))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                HStack {
-                    Text(L("download.storage_used"))
-                    Spacer()
-                    Text(ByteCountFormatter.string(fromByteCount: downloadUsedBytes, countStyle: .file))
-                        .foregroundColor(.secondary)
-                }
-
-                if downloadUsedBytes > 0 {
-                    Button(role: .destructive) {
-                        showingDeleteAllDownloadsAlert = true
-                    } label: {
-                        HStack {
-                            Text(L("download.delete_all"))
-                            Spacer()
-                            Image(systemName: "trash")
-                        }
-                    }
                 }
             }
 
@@ -264,33 +221,12 @@ struct M3UPlaylistSettingsView: View {
         } message: {
             Text(L("history.clear.message.all"))
         }
-        .alert(L("download.delete_all"), isPresented: $showingDeleteAllDownloadsAlert) {
-            Button(L("common.cancel"), role: .cancel) { }
-            Button(L("common.confirm_delete_yes"), role: .destructive) {
-                Task {
-                    await DownloadManager.shared.deleteAll(playlistId: playlist.id)
-                    await refreshDownloadUsage()
-                }
-            }
-        } message: {
-            Text(L("download.delete_all.message"))
-        }
         .task {
             await fetchStats()
-            await refreshDownloadUsage()
         }
         .refreshable {
             await fetchStats()
-            await refreshDownloadUsage()
         }
-    }
-
-    private func refreshDownloadUsage() async {
-        let pid = playlist.id
-        let bytes = await Task.detached(priority: .utility) {
-            DownloadStorage.usedBytes(playlistId: pid)
-        }.value
-        await MainActor.run { downloadUsedBytes = bytes }
     }
 
     // MARK: - File Picker

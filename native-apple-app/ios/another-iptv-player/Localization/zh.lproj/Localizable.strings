@@ -185,6 +185,11 @@
 "settings.about.version" = "版本";
 "settings.about.github.title" = "联系我们";
 "settings.about.github.desc" = "通过 WhatsApp 联系我们";
+"settings.about.tagline" = "仅媒体播放器 | 不含任何频道";
+"settings.about.privacy.title" = "隐私政策";
+"settings.about.terms.title" = "条款和条件";
+"settings.about.copyright.title" = "版权投诉";
+"settings.about.copyright.desc" = "举报版权侵权";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

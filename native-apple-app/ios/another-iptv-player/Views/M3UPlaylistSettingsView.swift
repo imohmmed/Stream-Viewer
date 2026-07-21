@@ -185,11 +185,52 @@ struct M3UPlaylistSettingsView: View {
                     Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-")
                         .foregroundColor(.secondary)
                 }
+                Text(L("settings.about.tagline"))
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 2)
+
                 Link(destination: URL(string: "https://wa.me/919154347808")!) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(L("settings.about.github.title"))
                             Text(L("settings.about.github.desc"))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Link(destination: URL(string: "https://tiger-iptv.com/privacy")!) {
+                    HStack {
+                        Text(L("settings.about.privacy.title"))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Link(destination: URL(string: "https://tiger-iptv.com/terms")!) {
+                    HStack {
+                        Text(L("settings.about.terms.title"))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Link(destination: URL(string: "https://tiger-iptv.com/copyright")!) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(L("settings.about.copyright.title"))
+                            Text(L("settings.about.copyright.desc"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

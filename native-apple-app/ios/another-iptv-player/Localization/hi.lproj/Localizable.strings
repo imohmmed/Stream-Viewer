@@ -185,6 +185,11 @@
 "settings.about.version" = "संस्करण";
 "settings.about.github.title" = "संपर्क करें";
 "settings.about.github.desc" = "WhatsApp पर संपर्क करें";
+"settings.about.tagline" = "केवल मीडिया प्लेयर | कोई चैनल शामिल नहीं";
+"settings.about.privacy.title" = "गोपनीयता नीति";
+"settings.about.terms.title" = "नियम और शर्तें";
+"settings.about.copyright.title" = "कॉपीराइट शिकायत";
+"settings.about.copyright.desc" = "कॉपीराइट उल्लंघन की रिपोर्ट करें";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

@@ -184,6 +184,11 @@
 "settings.about.version" = "Versión";
 "settings.about.github.title" = "Contáctanos";
 "settings.about.github.desc" = "Contáctanos por WhatsApp";
+"settings.about.tagline" = "Solo un reproductor | Sin canales incluidos";
+"settings.about.privacy.title" = "Política de Privacidad";
+"settings.about.terms.title" = "Términos y Condiciones";
+"settings.about.copyright.title" = "Queja de Derechos de Autor";
+"settings.about.copyright.desc" = "Reportar infracción de derechos de autor";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

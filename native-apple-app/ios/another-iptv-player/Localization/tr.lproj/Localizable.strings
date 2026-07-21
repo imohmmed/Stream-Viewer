@@ -185,6 +185,11 @@
 "settings.about.version" = "Sürüm";
 "settings.about.github.title" = "Bize Ulaşın";
 "settings.about.github.desc" = "WhatsApp üzerinden iletişime geçin";
+"settings.about.tagline" = "Sadece Medya Oynatıcı | Kanal Dahil Değil";
+"settings.about.privacy.title" = "Gizlilik Politikası";
+"settings.about.terms.title" = "Kullanım Koşulları";
+"settings.about.copyright.title" = "Telif Hakkı Şikayeti";
+"settings.about.copyright.desc" = "Telif hakkı ihlalini bildirin";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

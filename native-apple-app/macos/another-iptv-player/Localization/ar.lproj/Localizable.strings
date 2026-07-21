@@ -184,6 +184,11 @@
 "settings.about.version" = "الإصدار";
 "settings.about.github.title" = "تواصل معنا";
 "settings.about.github.desc" = "تواصل معنا عبر واتساب";
+"settings.about.tagline" = "مجرد مشغّل وسائط | لا يتضمن قنوات";
+"settings.about.privacy.title" = "سياسة الخصوصية";
+"settings.about.terms.title" = "الشروط والأحكام";
+"settings.about.copyright.title" = "شكوى حقوق الملكية";
+"settings.about.copyright.desc" = "الإبلاغ عن انتهاك حقوق الملكية";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

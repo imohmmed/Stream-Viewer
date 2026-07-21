@@ -185,6 +185,11 @@
 "settings.about.version" = "Версия";
 "settings.about.github.title" = "Связаться с нами";
 "settings.about.github.desc" = "Свяжитесь с нами через WhatsApp";
+"settings.about.tagline" = "Только медиаплеер | Каналы не включены";
+"settings.about.privacy.title" = "Политика конфиденциальности";
+"settings.about.terms.title" = "Условия использования";
+"settings.about.copyright.title" = "Жалоба на авторские права";
+"settings.about.copyright.desc" = "Сообщить о нарушении авторских прав";
 
 // MARK: - M3U settings
 "settings.m3u.type_label" = "M3U / M3U8";

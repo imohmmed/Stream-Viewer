@@ -182,8 +182,17 @@ struct PlaylistSettingsView: View {
             Section(L("settings.about.title")) {
                 LabeledContent(L("settings.about.version"),
                                value: (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"))
+                Text(L("settings.about.tagline"))
+                    .font(.caption)
+                    .foregroundStyle(.orange)
                 Link(L("settings.about.github.title"),
                      destination: URL(string: "https://wa.me/919154347808")!)
+                Link(L("settings.about.privacy.title"),
+                     destination: URL(string: "https://tiger-iptv.com/privacy")!)
+                Link(L("settings.about.terms.title"),
+                     destination: URL(string: "https://tiger-iptv.com/terms")!)
+                Link(L("settings.about.copyright.title"),
+                     destination: URL(string: "https://tiger-iptv.com/copyright")!)
             }
         }
         .formStyle(.grouped)

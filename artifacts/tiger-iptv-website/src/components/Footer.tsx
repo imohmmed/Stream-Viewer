@@ -19,6 +19,11 @@ export const Footer = () => {
                 ? 'The ultimate premium IPTV experience for Apple devices.' 
                 : 'أفضل تجربة IPTV متميزة لأجهزة آبل.'}
             </p>
+            <p className="text-xs text-primary/60 font-medium mt-1">
+              {language === 'en'
+                ? 'Just a Media Player | No Channels Included'
+                : 'مجرد مشغّل وسائط | لا يتضمن قنوات'}
+            </p>
           </div>
           
           <div className="flex flex-col gap-3">

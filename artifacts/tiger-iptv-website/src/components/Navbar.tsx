@@ -15,9 +15,10 @@ export const Navbar = () => {
 
   const navLinks = [
     { href: '/', label: language === 'en' ? 'Home' : 'الرئيسية' },
-    { href: '/privacy', label: language === 'en' ? 'Privacy' : 'الخصوصية' },
-    { href: '/terms', label: language === 'en' ? 'Terms' : 'الشروط' },
-    { href: '/contact', label: language === 'en' ? 'Contact' : 'اتصل بنا' },
+    { href: '/privacy', label: language === 'en' ? 'Privacy Policy' : 'سياسة الخصوصية' },
+    { href: '/terms', label: language === 'en' ? 'Terms & Conditions' : 'الشروط والأحكام' },
+    { href: '/contact', label: language === 'en' ? 'Contact Us' : 'اتصل بنا' },
+    { href: '/copyright', label: language === 'en' ? 'Copyright Complaint' : 'شكوى حقوق الملكية' },
   ];
 
   return (

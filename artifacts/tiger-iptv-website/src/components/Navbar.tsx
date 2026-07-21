@@ -26,8 +26,13 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-3xl font-display font-bold tracking-tighter text-primary">TIGER</span>
-              <span className="text-sm font-medium tracking-widest text-white/50 uppercase mt-1">IPTV</span>
+              <img
+                src={`${import.meta.env.BASE_URL}tiger_logo.png`}
+                alt="TIGER IPTV"
+                className="h-10 w-10 object-contain"
+              />
+              <span className="text-2xl font-display font-bold tracking-tighter text-primary">TIGER</span>
+              <span className="text-xs font-medium tracking-widest text-white/50 uppercase mt-1">IPTV</span>
             </Link>
           </div>
           

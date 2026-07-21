@@ -8,11 +8,33 @@ export default function Contact() {
   const { language } = useLanguage();
   const isEn = language === 'en';
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Real implementation would send data here
+    setSending(true);
+    setError('');
+    const form = e.target as HTMLFormElement;
+    const data = {
+      name:    (form.elements.namedItem('name')    as HTMLInputElement).value,
+      email:   (form.elements.namedItem('email')   as HTMLInputElement).value,
+      subject: (form.elements.namedItem('subject') as HTMLSelectElement).value,
+      message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('server');
+      setSubmitted(true);
+    } catch {
+      setError(isEn ? 'Failed to send. Please try WhatsApp or email directly.' : 'فشل الإرسال. تواصل عبر واتساب أو البريد مباشرةً.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -161,9 +183,12 @@ export default function Contact() {
                     />
                   </div>
                   
-                  <Button type="submit" size="lg" className="w-full sm:w-auto self-start mt-2">
+                  {error && (
+                    <p className="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-3">{error}</p>
+                  )}
+                  <Button type="submit" size="lg" className="w-full sm:w-auto self-start mt-2" disabled={sending}>
                     <Send className={`h-4 w-4 ${isEn ? 'mr-2' : 'ml-2'}`} />
-                    {isEn ? "Send Message" : "إرسال الرسالة"}
+                    {sending ? (isEn ? 'Sending...' : 'جاري الإرسال...') : (isEn ? "Send Message" : "إرسال الرسالة")}
                   </Button>
                 </form>
               )}

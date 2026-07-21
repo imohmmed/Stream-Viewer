@@ -1,0 +1,421 @@
+root@CARTI:/var/www/tiger-iptv# cat /etc/nginx/sites-enabled/*
+# ─────────────────────────────────────────────────────────────────────
+# Carti — TWO SEPARATE sites:
+#   • carti.my       = public marketing site (landing, blog, faq, …)
+#   • app.carti.my   = admin / dashboard / login app
+# Each host has its own SPA route table and its own API allowlist.
+# ─────────────────────────────────────────────────────────────────────
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name carti.my www.carti.my app.carti.my;
+  return 301 https://$host$request_uri;
+}
+
+# ── Shared SSL/cert/security snippet (re-used in each https block) ──
+# (kept inline below for clarity)
+
+# 1) carti.my + www.carti.my  — public marketing site
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name carti.my www.carti.my;
+  ssl_certificate /etc/nginx/ssl/carti.crt;
+  ssl_certificate_key /etc/nginx/ssl/carti.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  root /opt/carti/artifacts/carti/dist/public;
+  index index.html;
+  client_max_body_size 10M;
+  include /etc/nginx/snippets/cloudflare-real-ip.conf;
+
+  # Public API only (the API server itself enforces this allowlist for
+  # carti.my, but proxying it here lets pkpass / public card pages work).
+  location /api/ {
+    include /etc/nginx/snippets/security-headers.conf;
+    limit_req zone=carti_api burst=60 nodelay;
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Origin $http_origin;
+  }
+
+  location ~ /\.(?!well-known) { deny all; return 404; }
+
+  # Pretty store-card vanity URL: /{slug}/{cardId} → /api/public/s/{slug}/{id}
+  location ~ ^/(?!(?:api|assets|admin|dashboard|login|logout|register|signup|signin|blog|faq|terms|privacy|about|contact|pricing|support|help|docs|wallet|pkpass|enroll|enrollment|subscribe|subscription|checkout|payment|billing|invoice|order|orders|search|explore|discover|home|index|user|users|account|accounts|settings|profile|store|stores|shop|merchant|card|cards|sitemap|robots|google|favicon|opengraph|images|img|css|js|fonts|media|app|apps|mobile|ios|android|test|demo|example|404|500|error|carti|www|mail|ftp|ssh|vpn)(?:/|$))([a-z0-9][a-z0-9-]*[a-z0-9])/(\d+)/?$ {
+    include /etc/nginx/snippets/security-headers.conf;
+    limit_req zone=carti_api burst=60 nodelay;
+    proxy_pass http://127.0.0.1:8080/api/public/s/$1/$2;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+  }
+
+  location /assets/         {
+    include /etc/nginx/snippets/security-headers.conf; expires 1y; add_header Cache-Control "public, immutable"; }
+  location = /favicon.png   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /favicon.svg   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /opengraph.jpg {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+
+  location / {
+    include /etc/nginx/snippets/security-headers.conf;
+    try_files $uri $uri/ /index.html;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  }
+  location = /           {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location = /index.html {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404;        add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+}
+
+# 2) app.carti.my  — admin app
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name app.carti.my;
+  ssl_certificate /etc/nginx/ssl/carti.crt;
+  ssl_certificate_key /etc/nginx/ssl/carti.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  root /opt/carti/artifacts/carti/dist/public;
+  index index.html;
+  client_max_body_size 10M;
+  include /etc/nginx/snippets/cloudflare-real-ip.conf;
+
+  location /api/ {
+    include /etc/nginx/snippets/security-headers.conf;
+    limit_req zone=carti_api burst=60 nodelay;
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Origin $http_origin;
+  }
+
+  location ~ /\.(?!well-known) { deny all; return 404; }
+
+  location ^~ /admin     {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location ^~ /login     {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location ^~ /dashboard {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location ^~ /register  {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+
+  location /assets/         {
+    include /etc/nginx/snippets/security-headers.conf; expires 1y; add_header Cache-Control "public, immutable"; }
+  location = /favicon.png   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /favicon.svg   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /opengraph.jpg {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+
+  location / {
+    include /etc/nginx/snippets/security-headers.conf;
+    try_files $uri $uri/ /index.html;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  }
+  location = /           {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location = /index.html {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404;        add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+}
+
+# 3) Expo dev/Metro proxy
+server {
+  listen 80;
+  listen [::]:80;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name expo.carti.my;
+  limit_conn carti_conn 10;
+  ssl_certificate /etc/nginx/ssl/carti.crt;
+  ssl_certificate_key /etc/nginx/ssl/carti.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  location / {
+    include /etc/nginx/snippets/security-headers.conf;
+    proxy_pass http://127.0.0.1:19000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_read_timeout 86400;
+    add_header Cache-Control "no-store, no-cache" always;
+  }
+}
+# ─────────────────────────────────────────────────────────────────────
+# Carti — TWO SEPARATE sites:
+#   • carti.my       = public marketing site (landing, blog, faq, …)
+#   • app.carti.my   = admin / dashboard / login app
+# Each host has its own SPA route table and its own API allowlist.
+# ─────────────────────────────────────────────────────────────────────
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name carti.my www.carti.my app.carti.my;
+  return 301 https://$host$request_uri;
+}
+
+# ── Shared SSL/cert/security snippet (re-used in each https block) ──
+# (kept inline below for clarity)
+
+# 1) carti.my + www.carti.my  — public marketing site
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name carti.my www.carti.my;
+  ssl_certificate /etc/nginx/ssl/carti.crt;
+  ssl_certificate_key /etc/nginx/ssl/carti.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  root /opt/carti/artifacts/carti/dist/public;
+  index index.html;
+  client_max_body_size 10M;
+  include /etc/nginx/snippets/cloudflare-real-ip.conf;
+
+  # Public API only (the API server itself enforces this allowlist for
+  # carti.my, but proxying it here lets pkpass / public card pages work).
+  location /api/ {
+    include /etc/nginx/snippets/security-headers.conf;
+    limit_req zone=carti_api burst=60 nodelay;
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Origin $http_origin;
+  }
+
+  location ~ /\.(?!well-known) { deny all; return 404; }
+
+  # Pretty store-card vanity URL: /{slug}/{cardId} → /api/public/s/{slug}/{id}
+  location ~ ^/(?!api/|assets/|admin|dashboard|login|logout|register|signup|signin|blog|faq|terms|privacy|about|contact|pricing|support|help|docs|wallet|pkpass|enroll|enrollment|subscribe|subscription|checkout|payment|billing|invoice|order|orders|search|explore|discover|home|index|user|users|account|accounts|settings|profile|store|stores|shop|merchant|card|cards|sitemap|robots|google|favicon|opengraph|images|img|css|js|fonts|media|app|apps|mobile|ios|android|test|demo|example|404|500|error|carti|www|mail|ftp|ssh|vpn)([a-z0-9][a-z0-9-]*[a-z0-9])/(\d+)/?$ {
+    include /etc/nginx/snippets/security-headers.conf;
+    limit_req zone=carti_api burst=60 nodelay;
+    proxy_pass http://127.0.0.1:8080/api/public/s/$1/$2;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+  }
+
+  location /assets/         {
+    include /etc/nginx/snippets/security-headers.conf; expires 1y; add_header Cache-Control "public, immutable"; }
+  location = /favicon.png   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /favicon.svg   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /opengraph.jpg {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+
+  location / {
+    include /etc/nginx/snippets/security-headers.conf;
+    try_files $uri $uri/ /index.html;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  }
+  location = /           {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location = /index.html {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404;        add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+}
+
+# 2) app.carti.my  — admin app
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name app.carti.my;
+  ssl_certificate /etc/nginx/ssl/carti.crt;
+  ssl_certificate_key /etc/nginx/ssl/carti.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  root /opt/carti/artifacts/carti/dist/public;
+  index index.html;
+  client_max_body_size 10M;
+  include /etc/nginx/snippets/cloudflare-real-ip.conf;
+
+  location /api/ {
+    include /etc/nginx/snippets/security-headers.conf;
+    limit_req zone=carti_api burst=60 nodelay;
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Origin $http_origin;
+  }
+
+  location ~ /\.(?!well-known) { deny all; return 404; }
+
+  location ^~ /admin     {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location ^~ /login     {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location ^~ /dashboard {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location ^~ /register  {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri $uri/ /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+
+  location /assets/         {
+    include /etc/nginx/snippets/security-headers.conf; expires 1y; add_header Cache-Control "public, immutable"; }
+  location = /favicon.png   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /favicon.svg   {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+  location = /opengraph.jpg {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404; expires 7d; }
+
+  location / {
+    include /etc/nginx/snippets/security-headers.conf;
+    try_files $uri $uri/ /index.html;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  }
+  location = /           {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri /index.html; add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+  location = /index.html {
+    include /etc/nginx/snippets/security-headers.conf; try_files $uri =404;        add_header Cache-Control "no-store, no-cache, must-revalidate" always; }
+}
+
+# 3) Expo dev/Metro proxy
+server {
+  listen 80;
+  listen [::]:80;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name expo.carti.my;
+  limit_conn carti_conn 10;
+  ssl_certificate /etc/nginx/ssl/carti.crt;
+  ssl_certificate_key /etc/nginx/ssl/carti.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  location / {
+    include /etc/nginx/snippets/security-headers.conf;
+    proxy_pass http://127.0.0.1:19000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_read_timeout 86400;
+    add_header Cache-Control "no-store, no-cache" always;
+  }
+}
+# mytik.app — backend on :8081
+server {
+    server_name mytik.app www.mytik.app;
+
+    client_max_body_size 25M;
+
+    # Everything proxies to the Node app on :8081
+    location / {
+        proxy_pass http://127.0.0.1:8081;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 90s;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/mytik.app/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/mytik.app/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    if ($host = www.mytik.app) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    if ($host = mytik.app) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    listen 80;
+    listen [::]:80;
+    server_name mytik.app www.mytik.app;
+    return 404; # managed by Certbot
+}
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name tiger-iptv.com www.tiger-iptv.com _;
+
+    root /var/www/tiger-iptv;
+    index index.html;
+
+    # Security
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+
+    # Gzip
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml image/png;
+
+    # API → Node.js backend
+    location /api/ {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 10s;
+    }
+
+    # SPA fallback (React router)
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Cache static assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2|webp)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+}
+root@CARTI:/var/www/tiger-iptv# 

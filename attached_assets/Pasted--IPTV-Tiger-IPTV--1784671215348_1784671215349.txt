@@ -1,0 +1,55 @@
+تايغر IPTV: مشغل الوسائط المتقدم
+
+(Tiger IPTV) هو مشغل وسائط مستقل وعالي الأداء، تم تصميمه ليقدم تجربة تشغيل سلسة واحترافية. يتميز التطبيق بواجهة مستخدم عصرية وسريعة الاستجابة، مما يتيح لك إدارة وتشغيل قوائم التشغيل الخاصة بك بأقصى درجات الاستقرار والسرعة.
+
+أبرز الميزات:
+
+دعم شامل للصيغ: دعم كامل لقوائم التشغيل بصيغة M3U وأنظمة Xtream Codes API.
+
+تشغيل عالي الجودة: مدمج بأحدث تقنيات معالجة الفيديو لضمان بث سلس وبدون انقطاع.
+
+إدارة ذكية للقوائم: سهولة إضافة، تنظيم، والتنقل بين قوائم تشغيل متعددة.
+
+واجهة مستخدم متطورة: تصميم عملي وسريع يضمن أفضل تجربة للمستخدم.
+
+تنبيه هام وإخلاء مسؤولية قانوني:
+تطبيق Tiger IPTV هو مجرد أداة لتشغيل الوسائط المستقلة.
+
+التطبيق لا يوفر، ولا يستضيف، ولا يبيع، ولا يتضمن أي محتوى إعلامي أو قنوات تلفزيونية أو خدمات بث.
+
+لا يحتوي التطبيق على أي قوائم تشغيل مدمجة أو خوادم (سيرفرات) مسبقة الإعداد.
+
+يجب على المستخدمين إضافة المحتوى الخاص بهم والذي يمتلكون حقوق استخدامه القانونية من مزودي الخدمة الخاصين بهم.
+
+نحن نلتزم تماماً بقوانين حماية الملكية الفكرية، ولا ندعم أو نسهل أو نروج لأي شكل من أشكال البث غير المصرح به للمواد المحمية بحقوق الطبع والنشر. أي إساءة استخدام للتطبيق للوصول إلى محتوى غير قانوني تقع مسؤوليتها بالكامل على عاتق المستخدم.
+
+بتحميلك واستخدامك لتطبيق Tiger IPTV، فإنك تقر وتوافق على شروط الاستخدام وسياسة الخصوصية الخاصة بنا.
+
+
+
+Tiger IPTV: Advanced Media Streamer
+
+Tiger IPTV is a powerful, high-performance standalone media player designed to provide users with a seamless and sophisticated streaming experience. Built with a clean, intuitive interface, it allows you to manage and play your custom media playlists with absolute stability and speed.
+
+Key Features:
+
+Universal Format Support: Fully supports standard formats including M3U playlists and Xtream Codes API.
+
+High-Quality Playback: Engineered with advanced video codecs for smooth, uninterrupted viewing.
+
+Dynamic Playlist Management: Easily add, organize, and navigate through multiple playlists.
+
+Modern UI/UX: A fast, responsive, and user-friendly interface designed for effortless media playback.
+
+IMPORTANT NOTICE & LEGAL DISCLAIMER:
+Tiger IPTV is strictly a standalone media player utility.
+
+The application DOES NOT provide, host, sell, or include any media content, TV channels, or streaming services.
+
+There are no pre-loaded playlists or built-in servers.
+
+Users must provide and manage their own legally acquired content from their respective service providers.
+
+We strictly comply with intellectual property laws and do not endorse, facilitate, or promote the unauthorized streaming or distribution of copyrighted material. Any misuse of the application to access illegal content is the sole responsibility of the user.
+
+By downloading and using Tiger IPTV, you acknowledge and agree to our Terms of Use and Privacy Policy.

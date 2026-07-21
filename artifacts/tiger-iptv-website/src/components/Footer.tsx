@@ -34,6 +34,9 @@ export const Footer = () => {
             <Link href="/contact" className="text-sm text-foreground/70 hover:text-primary transition-colors">
               {language === 'en' ? 'Contact Us' : 'اتصل بنا'}
             </Link>
+            <Link href="/copyright" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+              {language === 'en' ? 'Copyright Complaint' : 'شكوى حقوق الملكية'}
+            </Link>
           </div>
           
           <div className="flex flex-col items-center md:items-end gap-3">

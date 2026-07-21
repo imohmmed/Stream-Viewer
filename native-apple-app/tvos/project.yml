@@ -1,6 +1,6 @@
 name: another-iptv-player
 options:
-  bundleIdPrefix: dev.another-iptv-player
+  bundleIdPrefix: com.tigeriptv
   deploymentTarget:
     tvOS: "18.0"
   createIntermediateGroups: true
@@ -69,7 +69,8 @@ targets:
           - zh
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.another-iptv-player.tv
+        PRODUCT_BUNDLE_IDENTIFIER: com.tigeriptv.tv
+        DEVELOPMENT_TEAM: PM27C7JC3M
         PRODUCT_NAME: TIGER
         ASSETCATALOG_COMPILER_APPICON_NAME: "App Icon & Top Shelf Image"
         SWIFT_OBJC_BRIDGING_HEADER: another-iptv-player/another-iptv-player-Bridging-Header.h

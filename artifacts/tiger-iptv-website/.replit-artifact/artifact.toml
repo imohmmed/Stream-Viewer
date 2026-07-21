@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/tiger-iptv-website/"
+title = "TIGER IPTV Website"
+version = "1.0.0"
+id = "artifacts/tiger-iptv-website"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/tiger-iptv-website/" ]
+localPort = 24304
+
+[services.development]
+run = "pnpm --filter @workspace/tiger-iptv-website run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/tiger-iptv-website", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/tiger-iptv-website/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24304"
+BASE_PATH = "/tiger-iptv-website/"
